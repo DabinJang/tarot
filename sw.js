@@ -1,3 +1,23 @@
+// Service Worker 완전 비활성화됨 - 캐시 문제 해결을 위해
+console.log('Service Worker disabled to prevent cache issues');
+
+// 모든 Service Worker 기능 비활성화
+self.addEventListener('install', function(event) {
+  console.log('Service Worker install event - disabled');
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', function(event) {
+  console.log('Service Worker activate event - disabled');
+  self.clients.claim();
+});
+
+self.addEventListener('fetch', function(event) {
+  // 캐시 사용하지 않고 항상 네트워크에서 가져오기
+  event.respondWith(fetch(event.request));
+});
+
+/* 비활성화된 코드
 const CACHE_NAME = 'tarot-app-v6-whale-compatible';
 const urlsToCache = [
   '/tarot/',
@@ -131,3 +151,4 @@ self.addEventListener('fetch', function(event) {
     )
   );
 });
+*/

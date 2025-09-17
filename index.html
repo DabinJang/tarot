@@ -6,15 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>심플 타로</title>
     
-    <!-- Cache Control - Enhanced for Whale Browser -->
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
+    <!-- Cache Control - Complete Disable -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0, private">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <meta name="cache-control" content="no-cache">
+    <meta name="cache-control" content="no-cache, no-store, must-revalidate, max-age=0">
     <meta name="expires" content="0">
     <meta name="pragma" content="no-cache">
+    <meta http-equiv="Last-Modified" content="0">
+    <meta http-equiv="ETag" content="">
     
-    <!-- Version: 2024-01-15-v3 - Whale Browser Compatible -->
+    <!-- Version: 2024-01-15-v4 - No Cache Version -->
 
     <meta name="theme-color" content="#4f46e5">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -257,7 +259,7 @@
 </head>
 
 <body class="bg-slate-900 text-slate-200">
-    <!-- Version: 2024-01-15-v3 - Whale Browser Compatible -->
+    <!-- Version: 2024-01-15-v4 - No Cache Version -->
     <div id="app">
 
         <section id="deck-selection-screen" class="screen">
@@ -790,8 +792,20 @@
         document.addEventListener('DOMContentLoaded', () => {
             try {
                 console.log('=== TAROT APP INITIALIZATION ===');
-                console.log('Version: 2024-01-15-v3 - Whale Browser Compatible');
+                console.log('Version: 2024-01-15-v4 - No Cache Version');
                 console.log('DOM Content Loaded - Initializing Tarot App');
+                
+                // 캐시 완전 무효화
+                if ('caches' in window) {
+                    caches.keys().then(function(cacheNames) {
+                        return Promise.all(
+                            cacheNames.map(function(cacheName) {
+                                console.log('Deleting cache:', cacheName);
+                                return caches.delete(cacheName);
+                            })
+                        );
+                    });
+                }
                 
                 // 현재 페이지의 모든 섹션 확인
                 const allSections = document.querySelectorAll('section');
@@ -831,41 +845,14 @@
                 document.body.innerHTML = '<div style="text-align: center; padding: 50px; color: white; background: #0f172a; min-height: 100vh;"><h1>타로 앱을 불러오는 중 오류가 발생했습니다.</h1><p>페이지를 새로고침해주세요.</p></div>';
             }
 
-            // PWA Service Worker 등록 (웨일 브라우저 호환)
+            // Service Worker 완전 비활성화 (캐시 문제 해결)
             if ('serviceWorker' in navigator) {
-                // 웨일 브라우저 감지
-                const isWhale = navigator.userAgent.includes('Whale');
-                console.log('Browser detected:', isWhale ? 'Whale Browser' : 'Other Browser');
-                
-                window.addEventListener('load', () => {
-                    // 기존 Service Worker 모두 해제
-                    navigator.serviceWorker.getRegistrations().then(function(registrations) {
-                        for(let registration of registrations) {
-                            console.log('Unregistering old SW:', registration.scope);
-                            registration.unregister();
-                        }
-                    });
-                    
-                    // 새 Service Worker 등록
-                    navigator.serviceWorker.register('./sw.js', {
-                        scope: './'
-                    })
-                        .then((registration) => {
-                            console.log('SW registered successfully: ', registration);
-                            // 웨일 브라우저에서 강제 업데이트
-                            if (isWhale) {
-                                console.log('Whale Browser: Force updating Service Worker');
-                                registration.update();
-                                setTimeout(() => {
-                                    if (registration.waiting) {
-                                        registration.waiting.postMessage({ action: 'skipWaiting' });
-                                    }
-                                }, 1000);
-                            }
-                        })
-                        .catch((registrationError) => {
-                            console.log('SW registration failed: ', registrationError);
-                        });
+                console.log('Disabling all Service Workers to prevent cache issues');
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                    for(let registration of registrations) {
+                        console.log('Unregistering Service Worker:', registration.scope);
+                        registration.unregister();
+                    }
                 });
             }
         });
