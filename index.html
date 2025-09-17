@@ -54,6 +54,7 @@
             align-items: center;
             padding: 1rem;
             transition: opacity 0.5s ease-in-out;
+            position: relative;
         }
         .card {
             background: linear-gradient(145deg, #4f46e5, #312e81);
@@ -204,6 +205,13 @@
         .copyright-link:hover {
             color: #94a3b8;
         }
+        .copyright-notice {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-200">
@@ -221,7 +229,7 @@
                 </div>
                 
                 <!-- 저작권 표시 -->
-                <div class="mt-12 text-center">
+                <div class="copyright-notice">
                     <p class="text-xs text-slate-500">
                         <a href="https://www.flaticon.com/kr/free-icons/" title="타로 아이콘" class="copyright-link">타로 아이콘 제작자: Smashicons - Flaticon</a>
                     </p>
@@ -239,6 +247,13 @@
                     <button onclick="resetGame()" class="action-btn secondary-btn">뒤로가기</button>
                     <button id="view-results-btn" class="action-btn" onclick="showResults()" disabled>결과 보기</button>
                 </div>
+                
+                <!-- 저작권 표시 -->
+                <div class="copyright-notice">
+                    <p class="text-xs text-slate-500">
+                        <a href="https://www.flaticon.com/kr/free-icons/" title="타로 아이콘" class="copyright-link">타로 아이콘 제작자: Smashicons - Flaticon</a>
+                    </p>
+                </div>
             </div>
         </section>
 
@@ -254,7 +269,7 @@
                  <button onclick="resetGame()" class="action-btn mt-8 secondary-btn">처음으로 돌아가기</button>
                  
                  <!-- 저작권 표시 -->
-                 <div class="mt-8 text-center">
+                 <div class="copyright-notice">
                      <p class="text-xs text-slate-500">
                          <a href="https://www.flaticon.com/kr/free-icons/" title="타로 아이콘" class="copyright-link">타로 아이콘 제작자: Smashicons - Flaticon</a>
                      </p>
