@@ -27,7 +27,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Lora:ital,wght@0,400;0,700;1,400&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Lora:ital,wght@0,400;0,700;1,400&display=swap"
         rel="stylesheet">
     <style>
         body {
@@ -254,35 +255,35 @@
                         <a href="https://www.flaticon.com/kr/free-icons/" title="타로 아이콘" class="copyright-link">타로 아이콘
                             제작자: Smashicons -
                             Flaticon</a>
-                        </p>
-                        </div>
-                        </div>
-                        </section>
-                        
-                        <section id="deck-selection-screen" class="screen hidden">
-                            <div class="text-center">
-                                <h2 class="text-3xl md:text-4xl font-bold mb-4 app-title text-amber-300">카드 덱을 선택하세요</h2>
-                                <p class="text-slate-400 mb-12 text-lg">어떤 카드로 운명을 점쳐보시겠어요?</p>
-                                <div class="space-y-4 flex flex-col items-center">
-                                    <button onclick="selectDeck('major')" class="action-btn w-64">메이저 아르카나 (22장)</button>
-                                    <button onclick="selectDeck('full')" class="action-btn w-64">전체 카드 (78장)</button>
-                                </div>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="deck-selection-screen" class="screen hidden">
+            <div class="text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 app-title text-amber-300">카드 덱을 선택하세요</h2>
+                <p class="text-slate-400 mb-12 text-lg">어떤 카드로 운명을 점쳐보시겠어요?</p>
+                <div class="space-y-4 flex flex-col items-center">
+                    <button onclick="selectDeck('major')" class="action-btn w-64">메이저 아르카나 (22장)</button>
+                    <button onclick="selectDeck('full')" class="action-btn w-64">전체 카드 (78장)</button>
+                </div>
 
                 <div class="mt-8 text-center">
                     <p class="text-xs text-slate-400">
                         <a href="https://www.flaticon.com/kr/free-icons/" title="타로 아이콘" class="copyright-link">타로 아이콘
                             제작자:
                             Smashicons - Flaticon</a>
-                        </p>
-                        </div>
-                        </div>
-                        </section>
-                        
-                        <section id="count-selection-screen" class="screen hidden">
-                            <div class="text-center">
-                                <h2 class="text-3xl md:text-4xl font-bold mb-4 app-title text-amber-300">카드 개수를 선택하세요</h2>
-                                <p class="text-slate-400 mb-8 text-lg">몇 장의 카드를 뽑으시겠어요?</p>
-                                <div class="space-y-4 flex flex-col items-center mb-8">
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="count-selection-screen" class="screen hidden">
+            <div class="text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 app-title text-amber-300">카드 개수를 선택하세요</h2>
+                <p class="text-slate-400 mb-8 text-lg">몇 장의 카드를 뽑으시겠어요?</p>
+                <div class="space-y-4 flex flex-col items-center mb-8">
                     <button onclick="startGame(1)" class="action-btn w-64">한 장 뽑기</button>
                     <button onclick="startGame(3)" class="action-btn w-64">세 장 뽑기</button>
                     <button onclick="showCustomInput()" class="action-btn w-64">원하는 개수 뽑기</button>
@@ -336,9 +337,9 @@
                     <p class="text-xs text-slate-500">
                         <a href="https://www.flaticon.com/kr/free-icons/" title="타로 아이콘" class="copyright-link">타로 아이콘
                             제작자: Smashicons - Flaticon</a>
-                        </p>
-                        </div>
-                        </div>
+                    </p>
+                </div>
+            </div>
         </section>
 
     </div>
@@ -475,7 +476,7 @@
             interpText: document.getElementById('interp-text'),
             customInputModal: document.getElementById('custom-input-modal'),
             customCardCountInput: document.getElementById('custom-card-count'),
-                    customInputDescript                ument.                          ById('                nput-description'),
+            customInputDescription: document.getElementById('custom-input-description'),
             selectionTitle: document.getElementById('selection-title'),
             selectionSubtitle: document.getElementById('selection-subtitle'),
             alertModal: document.getElementById('alert-modal'),
@@ -487,7 +488,7 @@
             const activeScreen = document.getElementById(`${screenId}-screen`) || document.getElementById(screenId);
             if (activeScreen) {
                 activeScreen.classList.remove('hidden');
-                setTimeout(() => activeScreen.classList-0'), 50);
+                setTimeout(() => activeScreen.classList.remove('opacity-0'), 50);
                 state.currentScreen = screenId;
             }
         }
@@ -496,11 +497,13 @@
             showScreen('deck-selection');
         }
 
-        function selectDeck(deckType)                    state.selectedDeck = deckType;
-            sho            'count-selection');
+        function selectDeck(deckType) {
+            state.selectedDeck = deckType;
+            showScreen('count-selection');
         }
 
-        funct                tSelecti                        showScreen('count-selection');
+        function showCountSelection() {
+            showScreen('count-selection');
         }
 
         function showAlert(message) {
@@ -527,9 +530,9 @@
             elements.viewResultsBtn.disabled = cardsLeft !== 0;
 
             if (cardsLeft === 0) {
-                                   s.sel                                    le.inner                        드를 선택했습니다. 결과 보기를 눌러주세요.';
+                elements.selectionSubtitle.innerHTML = '모든 카드를 선택했습니다. 결과 보기를 눌러주세요.';
             } else {
-                             lements.se                                            rHTML = `남은 카드: <sp                                    -left-count">${cardsLeft}</span>`;
+                elements.selectionSubtitle.innerHTML = `남은 카드: <span id="cards-left-count">${cardsLeft}</span>`;
             }
         }
 
@@ -599,9 +602,9 @@
         }
 
         function showCustomInput() {
-                    c                                   ds =                         lectedDeck ==                                            
-            elemen                                    utDescription.textContent = `                                    s} 사이의 숫자를 입력하세요)`;
-                                                        ountInput.max = maxCards;
+            const maxCards = state.selectedDeck === 'major' ? 22 : 78;
+            elements.customInputDescription.textContent = `(1~${maxCards} 사이의 숫자를 입력하세요)`;
+            elements.customCardCountInput.max = maxCards;
             elements.customInputModal.classList.remove('hidden');
             elements.customCardCountInput.value = '';
             elements.customCardCountInput.focus();
@@ -613,9 +616,9 @@
 
         function startCustomGame() {
             const count = parseInt(elements.customCardCountInput.value);
-            cons                ds =                            tedDe                major' ? 22 : 78;
+            const maxCards = state.selectedDeck === 'major' ? 22 : 78;
 
-                              && count >= 1 s) {
+            if (count && count >= 1 && count <= maxCards) {
                 hideCustomInput();
                 startGame(count);
             } else {
@@ -631,7 +634,7 @@
             const isReversed = Math.random() < 0.5;
             const cardFront = cardEl.querySelector('.card-front');
 
-                                       (isReversed) {
+            if (isReversed) {
                 cardFront.classList.add('reversed');
             } else {
                 cardFront.classList.remove('reversed');
@@ -701,7 +704,7 @@
             const installBtn = document.createElement('button');
             installBtn.id = 'install-btn';
             installBtn.textContent = '앱 설치하기';
-                      stallBtn.cla                                           n w-6                                른 버튼과 스타일 통일
+            installBtn.className = 'action-btn w-64'; // 다른 버튼과 스타일 통일
             installBtn.onclick = () => {
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
