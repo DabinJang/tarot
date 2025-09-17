@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tarot-app-v5-deck-selection-first';
+const CACHE_NAME = 'tarot-app-v6-whale-compatible';
 const urlsToCache = [
   '/tarot/',
   '/tarot/index.html',
@@ -100,18 +100,23 @@ self.addEventListener('install', function(event) {
 self.addEventListener('activate', function(event) {
   event.waitUntil(
     caches.keys().then(function(cacheNames) {
+      console.log('Service Worker: Deleting all caches for Whale Browser compatibility');
       return Promise.all(
         cacheNames.map(function(cacheName) {
-          // 모든 이전 캐시 삭제 (강제 업데이트)
+          console.log('Service Worker: Deleting cache:', cacheName);
+          // 모든 이전 캐시 삭제 (웨일 브라우저 호환)
           return caches.delete(cacheName);
         })
       );
     }).then(function() {
+      console.log('Service Worker: Creating new cache:', CACHE_NAME);
       // 새 캐시 생성
       return caches.open(CACHE_NAME);
     })
   );
+  // 웨일 브라우저에서 즉시 클라이언트 제어
   self.clients.claim();
+  self.skipWaiting();
 });
 
 self.addEventListener('fetch', function(event) {

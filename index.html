@@ -6,12 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mystic Tarot Web App</title>
     
-    <!-- Cache Control -->
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <!-- Cache Control - Enhanced for Whale Browser -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
+    <meta name="cache-control" content="no-cache">
+    <meta name="expires" content="0">
+    <meta name="pragma" content="no-cache">
     
-    <!-- Version: 2024-01-15-v2 -->
+    <!-- Version: 2024-01-15-v3 - Whale Browser Compatible -->
 
     <meta name="theme-color" content="#4f46e5">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -254,7 +257,7 @@
 </head>
 
 <body class="bg-slate-900 text-slate-200">
-    <!-- Version: 2024-01-15-v2 - Deck Selection Screen First -->
+    <!-- Version: 2024-01-15-v3 - Whale Browser Compatible -->
     <div id="app">
 
         <section id="deck-selection-screen" class="screen">
@@ -784,7 +787,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             try {
                 console.log('=== TAROT APP INITIALIZATION ===');
-                console.log('Version: 2024-01-15-v2');
+                console.log('Version: 2024-01-15-v3 - Whale Browser Compatible');
                 console.log('DOM Content Loaded - Initializing Tarot App');
                 
                 // 현재 페이지의 모든 섹션 확인
@@ -825,19 +828,36 @@
                 document.body.innerHTML = '<div style="text-align: center; padding: 50px; color: white; background: #0f172a; min-height: 100vh;"><h1>타로 앱을 불러오는 중 오류가 발생했습니다.</h1><p>페이지를 새로고침해주세요.</p></div>';
             }
 
-            // PWA Service Worker 등록 (강제 업데이트)
+            // PWA Service Worker 등록 (웨일 브라우저 호환)
             if ('serviceWorker' in navigator) {
+                // 웨일 브라우저 감지
+                const isWhale = navigator.userAgent.includes('Whale');
+                console.log('Browser detected:', isWhale ? 'Whale Browser' : 'Other Browser');
+                
                 window.addEventListener('load', () => {
+                    // 기존 Service Worker 모두 해제
+                    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                        for(let registration of registrations) {
+                            console.log('Unregistering old SW:', registration.scope);
+                            registration.unregister();
+                        }
+                    });
+                    
+                    // 새 Service Worker 등록
                     navigator.serviceWorker.register('./sw.js', {
                         scope: './'
                     })
                         .then((registration) => {
                             console.log('SW registered successfully: ', registration);
-                            // 강제 업데이트
-                            registration.update();
-                            // 모든 클라이언트에게 새 Service Worker 사용하도록 알림
-                            if (registration.waiting) {
-                                registration.waiting.postMessage({ action: 'skipWaiting' });
+                            // 웨일 브라우저에서 강제 업데이트
+                            if (isWhale) {
+                                console.log('Whale Browser: Force updating Service Worker');
+                                registration.update();
+                                setTimeout(() => {
+                                    if (registration.waiting) {
+                                        registration.waiting.postMessage({ action: 'skipWaiting' });
+                                    }
+                                }, 1000);
                             }
                         })
                         .catch((registrationError) => {
