@@ -10,7 +10,7 @@ function createWindow() {
       contextIsolation: true
     },
     icon: path.join(__dirname, 'icons/icon.png'),
-    title: '신비한 타로'
+    title: '심플 타로'
   });
 
   mainWindow.loadFile('index.html');

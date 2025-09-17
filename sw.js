@@ -1,14 +1,11 @@
-// Service Worker 완전 비활성화됨 - 캐시 문제 해결을 위해
-console.log('Service Worker disabled to prevent cache issues');
+// Service Worker 비활성화됨 - 캐시 문제 해결을 위해
+// 이 파일은 캐시를 사용하지 않도록 설정되어 있습니다.
 
-// 모든 Service Worker 기능 비활성화
 self.addEventListener('install', function(event) {
-  console.log('Service Worker install event - disabled');
   self.skipWaiting();
 });
 
 self.addEventListener('activate', function(event) {
-  console.log('Service Worker activate event - disabled');
   self.clients.claim();
 });
 
@@ -16,139 +13,3 @@ self.addEventListener('fetch', function(event) {
   // 캐시 사용하지 않고 항상 네트워크에서 가져오기
   event.respondWith(fetch(event.request));
 });
-
-/* 비활성화된 코드
-const CACHE_NAME = 'tarot-app-v6-whale-compatible';
-const urlsToCache = [
-  '/tarot/',
-  '/tarot/index.html',
-  '/tarot/manifest.json',
-  '/tarot/cards/major/0. 바보 카드.jpg',
-  '/tarot/cards/major/1. 마법사 카드.jpg',
-  '/tarot/cards/major/2. 여사제 카드.jpg',
-  '/tarot/cards/major/3. 여황제 카드.jpg',
-  '/tarot/cards/major/4. 황제 카드.jpg',
-  '/tarot/cards/major/5. 교황 카드.jpg',
-  '/tarot/cards/major/6. 연인 카드.jpg',
-  '/tarot/cards/major/7. 전차 카드.jpg',
-  '/tarot/cards/major/8. 힘 카드.jpg',
-  '/tarot/cards/major/9. 은둔자 카드.jpg',
-  '/tarot/cards/major/10. 운명의 수레바퀴.jpg',
-  '/tarot/cards/major/11. 정의 카드.jpg',
-  '/tarot/cards/major/12. 행맨 카드.jpg',
-  '/tarot/cards/major/13. 죽음 카드.jpg',
-  '/tarot/cards/major/14. 절제 카드.jpg',
-  '/tarot/cards/major/15. 악마 카드.jpg',
-  '/tarot/cards/major/16. 타워 카드.jpg',
-  '/tarot/cards/major/17. 별 카드.jpg',
-  '/tarot/cards/major/18. 달 카드.jpg',
-  '/tarot/cards/major/19. 태양 카드.jpg',
-  '/tarot/cards/major/20. 심판 카드.jpg',
-  '/tarot/cards/major/21. 세계 카드.jpg',
-  // Wand cards
-  '/tarot/cards/wand/완드 에이스.jpg',
-  '/tarot/cards/wand/완드2.jpg',
-  '/tarot/cards/wand/완드3.jpg',
-  '/tarot/cards/wand/완드4.jpg',
-  '/tarot/cards/wand/완드5.jpg',
-  '/tarot/cards/wand/완드6.jpg',
-  '/tarot/cards/wand/완드7.jpg',
-  '/tarot/cards/wand/완드8.jpg',
-  '/tarot/cards/wand/완드9.jpg',
-  '/tarot/cards/wand/완드10.jpg',
-  '/tarot/cards/wand/완드 페이지.jpg',
-  '/tarot/cards/wand/완드 나이트.jpg',
-  '/tarot/cards/wand/완드 퀸.jpg',
-  '/tarot/cards/wand/완드 킹.jpg',
-  // Cup cards
-  '/tarot/cards/cup/컵 에이스.jpg',
-  '/tarot/cards/cup/컵2.jpg',
-  '/tarot/cards/cup/컵3.jpg',
-  '/tarot/cards/cup/컵4.jpg',
-  '/tarot/cards/cup/컵5.jpg',
-  '/tarot/cards/cup/컵6.jpg',
-  '/tarot/cards/cup/컵7.jpg',
-  '/tarot/cards/cup/컵8.jpg',
-  '/tarot/cards/cup/컵9.jpg',
-  '/tarot/cards/cup/컵10.jpg',
-  '/tarot/cards/cup/컵 페이지.jpg',
-  '/tarot/cards/cup/컵 나이트.jpg',
-  '/tarot/cards/cup/컵 퀸.jpg',
-  '/tarot/cards/cup/컵 킹.jpg',
-  // Sword cards
-  '/tarot/cards/sword/소드 에이스.jpg',
-  '/tarot/cards/sword/소드2.jpg',
-  '/tarot/cards/sword/소드3.jpg',
-  '/tarot/cards/sword/소드4.jpg',
-  '/tarot/cards/sword/소드5.jpg',
-  '/tarot/cards/sword/소드6.jpg',
-  '/tarot/cards/sword/소드7.jpg',
-  '/tarot/cards/sword/소드8.jpg',
-  '/tarot/cards/sword/소드9.jpg',
-  '/tarot/cards/sword/소드10.jpg',
-  '/tarot/cards/sword/소드 페이지.jpg',
-  '/tarot/cards/sword/소드 나이트.jpg',
-  '/tarot/cards/sword/소드 퀸.jpg',
-  '/tarot/cards/sword/소드 킹.jpg',
-  // Pentacle cards
-  '/tarot/cards/pentacle/펜타클 에이스.jpg',
-  '/tarot/cards/pentacle/펜타클2.jpg',
-  '/tarot/cards/pentacle/펜타클3.jpg',
-  '/tarot/cards/pentacle/펜타클4.jpg',
-  '/tarot/cards/pentacle/펜타클5.jpg',
-  '/tarot/cards/pentacle/펜타클6.jpg',
-  '/tarot/cards/pentacle/펜타클7.jpg',
-  '/tarot/cards/pentacle/펜타클8.jpg',
-  '/tarot/cards/pentacle/펜타클9.jpg',
-  '/tarot/cards/pentacle/펜타클10.jpg',
-  '/tarot/cards/pentacle/펜타클 페이지.jpg',
-  '/tarot/cards/pentacle/펜타클 나이트.jpg',
-  '/tarot/cards/pentacle/펜타클 퀸.jpg',
-  '/tarot/cards/pentacle/펜타클 킹.jpg'
-];
-
-self.addEventListener('install', function(event) {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(function(cache) {
-        return cache.addAll(urlsToCache);
-      })
-  );
-  self.skipWaiting();
-});
-
-self.addEventListener('activate', function(event) {
-  event.waitUntil(
-    caches.keys().then(function(cacheNames) {
-      console.log('Service Worker: Deleting all caches for Whale Browser compatibility');
-      return Promise.all(
-        cacheNames.map(function(cacheName) {
-          console.log('Service Worker: Deleting cache:', cacheName);
-          // 모든 이전 캐시 삭제 (웨일 브라우저 호환)
-          return caches.delete(cacheName);
-        })
-      );
-    }).then(function() {
-      console.log('Service Worker: Creating new cache:', CACHE_NAME);
-      // 새 캐시 생성
-      return caches.open(CACHE_NAME);
-    })
-  );
-  // 웨일 브라우저에서 즉시 클라이언트 제어
-  self.clients.claim();
-  self.skipWaiting();
-});
-
-self.addEventListener('fetch', function(event) {
-  event.respondWith(
-    caches.match(event.request)
-      .then(function(response) {
-        if (response) {
-          return response;
-        }
-        return fetch(event.request);
-      }
-    )
-  );
-});
-*/
