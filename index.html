@@ -242,25 +242,7 @@
 
     <div id="app">
 
-        <section id="start-screen" class="screen">
-            <div class="text-center">
-                <h1 class="text-5xl md:text-7xl font-bold mb-4 app-title text-amber-300">신비한 타로</h1>
-                <p class="text-slate-400 mb-12 text-lg">당신의 운명을 알아볼 준비가 되셨나요?</p>
-                <div class="space-y-4 flex flex-col items-center">
-                    <button onclick="showDeckSelection()" class="action-btn w-64">타로 시작하기</button>
-                </div>
-
-                <div class="mt-8 text-center">
-                    <p class="text-xs text-slate-400">
-                        <a href="https://www.flaticon.com/kr/free-icons/" title="타로 아이콘" class="copyright-link">타로 아이콘
-                            제작자: Smashicons -
-                            Flaticon</a>
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <section id="deck-selection-screen" class="screen hidden">
+        <section id="deck-selection-screen" class="screen">
             <div class="text-center">
                 <h2 class="text-3xl md:text-4xl font-bold mb-4 app-title text-amber-300">카드 덱을 선택하세요</h2>
                 <p class="text-slate-400 mb-12 text-lg">어떤 카드로 운명을 점쳐보시겠어요?</p>
@@ -451,7 +433,7 @@
         ];
 
         let state = {
-            currentScreen: 'start-screen',
+            currentScreen: 'deck-selection-screen',
             cardsToDraw: 0,
             selectedCards: [],
             fullDeck: [],
@@ -459,7 +441,6 @@
         };
 
         const screens = {
-            start: document.getElementById('start-screen'),
             deckSelection: document.getElementById('deck-selection-screen'),
             countSelection: document.getElementById('count-selection-screen'),
             selection: document.getElementById('selection-screen'),
@@ -687,43 +668,12 @@
             state.cardsToDraw = 0;
             state.selectedCards = [];
             state.selectedDeck = null;
-            showScreen('start');
+            showScreen('deck-selection');
         }
 
-        // PWA 설치 프롬프트
-        let deferredPrompt;
-        let installButton;
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-
-            // 기존 버튼이 있으면 추가하지 않음
-            if (document.getElementById('install-btn')) return;
-
-            const installBtn = document.createElement('button');
-            installBtn.id = 'install-btn';
-            installBtn.textContent = '앱 설치하기';
-            installBtn.className = 'action-btn mt-4';
-            installBtn.style.display = 'block';
-            installBtn.onclick = () => {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('PWA 설치됨');
-                    }
-                    deferredPrompt = null;
-                    installBtn.remove();
-                });
-            };
-
-            const startScreen = document.getElementById('start-screen');
-            const buttonContainer = startScreen.querySelector('.space-y-4');
-            buttonContainer.appendChild(installBtn);
-        });
 
         document.addEventListener('DOMContentLoaded', () => {
-            showScreen('start');
+            showScreen('deck-selection');
 
             // PWA Service Worker 등록
             if ('serviceWorker' in navigator) {
