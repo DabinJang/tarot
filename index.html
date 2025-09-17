@@ -11,7 +11,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="신비한 타로">
     <link rel="manifest" href="./manifest.json">
-    <link rel="apple-touch-icon" href="icons/icon-512x512.png">
+    <!-- <link rel="apple-touch-icon" href="icons/icon-512x512.png"> -->
     
     <!-- iOS Safari PWA Fixes -->
     <meta name="apple-mobile-web-app-orientations" content="portrait">
@@ -546,13 +546,17 @@
             
             // PWA Service Worker 등록
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('./sw.js')
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('./sw.js', {
+                        scope: './'
+                    })
                     .then((registration) => {
-                        console.log('SW registered: ', registration);
+                        console.log('SW registered successfully: ', registration);
                     })
                     .catch((registrationError) => {
                         console.log('SW registration failed: ', registrationError);
                     });
+                });
             }
         });
 
