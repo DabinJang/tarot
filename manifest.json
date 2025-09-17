@@ -2,7 +2,7 @@
   "name": "신비한 타로",
   "short_name": "타로",
   "description": "당신의 운명을 알아보는 타로 카드 앱",
-  "start_url": "/",
+  "start_url": "/tarot/",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#4f46e5",
