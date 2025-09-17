@@ -227,10 +227,48 @@
                 <h1 class="text-5xl md:text-7xl font-bold mb-4 app-title text-amber-300">신비한 타로</h1>
                 <p class="text-slate-400 mb-12 text-lg">당신의 운명을 알아볼 준비가 되셨나요?</p>
                 <div class="space-y-4 flex flex-col items-center">
+                    <button onclick="showDeckSelection()" class="action-btn w-64">타로 시작하기</button>
+                    </div>
+                    
+                    <!-- 저작권 표시 -->
+                    <div class="mt-8 text-center">
+                        <p class="text-xs text-slate-400">
+                            <a href="https://www.flaticon.com/kr/free-icons/" title="타로 아이콘" class="copyright-link">타로 아이콘 제작자: Smashicons -
+                                Flaticon</a>
+                        </p>
+                    </div>
+                    </div>
+                    </section>
+                    
+                    <section id="deck-selection-screen" class="screen hidden">
+                        <div class="text-center">
+                            <h2 class="text-3xl md:text-4xl font-bold mb-4 app-title text-amber-300">카드 덱을 선택하세요</h2>
+                            <p class="text-slate-400 mb-12 text-lg">어떤 카드로 운명을 점쳐보시겠어요?</p>
+                            <div class="space-y-4 flex flex-col items-center">
+                                <button onclick="selectDeck('major')" class="action-btn w-64">메이저 아르카나 (22장)</button>
+                                <button onclick="selectDeck('full')" class="action-btn w-64">전체 카드 (78장)</button>
+                            </div>
+                    
+                            <!-- 저작권 표시 -->
+                            <div class="mt-8 text-center">
+                                <p class="text-xs text-slate-400">
+                                    <a href="https://www.flaticon.com/kr/free-icons/" title="타로 아이콘" class="copyright-link">타로 아이콘 제작자:
+                                        Smashicons - Flaticon</a>
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <section id="count-selection-screen" class="screen hidden">
+                        <div class="text-center">
+                            <h2 class="text-3xl md:text-4xl font-bold mb-4 app-title text-amber-300">카드 개수를 선택하세요</h2>
+                            <p class="text-slate-400 mb-8 text-lg">몇 장의 카드를 뽑으시겠어요?</p>
+                            <div class="space-y-4 flex flex-col items-center mb-8">
                     <button onclick="startGame(1)" class="action-btn w-64">한 장 뽑기</button>
                     <button onclick="startGame(3)" class="action-btn w-64">세 장 뽑기</button>
                     <button onclick="showCustomInput()" class="action-btn w-64">원하는 개수 뽑기</button>
                 </div>
+                <button onclick="showDeckSelection()" class="action-btn secondary-btn">뒤로가기</button>
                 
                 <!-- 저작권 표시 -->
                 <div class="mt-8 text-center">
@@ -243,13 +281,13 @@
 
         <section id="selection-screen" class="screen hidden">
             <div class="container mx-auto text-center">
+                <div class="flex justify-center gap-4 mb-8">
+                    <button onclick="showCountSelection()" class="action-btn secondary-btn">뒤로가기</button>
+                    <button id="view-results-btn" class="action-btn" onclick="showResults()" disabled>결과 보기</button>
+                </div>
                  <h2 id="selection-title" class="text-3xl md:text-4xl font-bold mb-2 app-title text-amber-300">카드를 선택하세요</h2>
                  <p id="selection-subtitle" class="text-slate-400 mb-8">남은 카드: <span id="cards-left-count"></span></p>
                 <div id="card-grid" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-13 gap-2 md:gap-4 max-w-7xl mx-auto mb-8">
-                </div>
-                <div class="flex justify-center gap-4 mt-8">
-                    <button onclick="resetGame()" class="action-btn secondary-btn">뒤로가기</button>
-                    <button id="view-results-btn" class="action-btn" onclick="showResults()" disabled>결과 보기</button>
                 </div>
                 
                 <!-- 저작권 표시 -->
@@ -286,7 +324,7 @@
     <div id="custom-input-modal" class="modal-backdrop hidden">
         <div class="modal-content text-center">
             <h3 class="text-2xl font-bold mb-4 app-title text-amber-300">몇 장을 뽑으시겠어요?</h3>
-            <p class="text-slate-400 mb-6">(1~78 사이의 숫자를 입력하세요)</p>
+            <p id="custom-input-description" class="text-slate-400 mb-6">(1~78 사이의 숫자를 입력하세요)</p>
             <input type="number" id="custom-card-count" class="bg-slate-700 text-white text-center text-2xl w-32 p-2 rounded-lg border-2 border-indigo-500 focus:border-amber-400 focus:outline-none" min="1" max="78">
             <div class="mt-6 flex justify-center gap-4">
                 <button onclick="startCustomGame()" class="action-btn px-8 py-3">확인</button>
@@ -392,10 +430,13 @@
             cardsToDraw: 0,
             selectedCards: [], 
             fullDeck: [],
+            selectedDeck: null, // 'major' or 'full'
         };
 
         const screens = {
             start: document.getElementById('start-screen'),
+            deckSelection: document.getElementById('deck-selection-screen'),
+            countSelection: document.getElementById('count-selection-screen'),
             selection: document.getElementById('selection-screen'),
             result: document.getElementById('result-screen'),
         };
@@ -410,6 +451,7 @@
             interpText: document.getElementById('interp-text'),
             customInputModal: document.getElementById('custom-input-modal'),
             customCardCountInput: document.getElementById('custom-card-count'),
+            customInputDescription: document.getElementB                                                      ription'),
             selectionTitle: document.getElementById('selection-title'),
             selectionSubtitle: document.getElementById('selection-subtitle'),
             alertModal: document.getElementById('alert-modal'),
@@ -422,6 +464,16 @@
             activeScreen.classList.remove('hidden');
             setTimeout(() => activeScreen.classList.remove('opacity-0'), 50);
             state.currentScreen = screenId;
+        }
+
+        function showDeckSelec       showScreen('deck-selection');
+        }
+
+        function selectDeck(deckTyp                      state.selectedDeck = deckType;
+            showScreen('count                    ;
+        }
+
+        function showCountSelection()                            showScreen('count-selection');
         }
 
         function showAlert(message) {
@@ -502,7 +554,10 @@
         function startGame(count) {
             state.cardsToDraw = count;
             state.selectedCards = [];
-            state.fullDeck = tarotDeckData.map((card, index) => ({ ...card, id: index }));
+            
+            // 선택된 덱에 따라 카드 데                                    if (state.selectedD                                                    st                                                ce(0, 22).map((card, in                        rd, id:                                 } else {
+                state.fullDeck = tarotDeckData.map((card, index) => ({ ...card, id: index }));
+            }
             
             elements.selectionTitle.textContent = `${count}장의 카드를 선택하세요`;
             
@@ -512,6 +567,9 @@
         }
 
         function showCustomInput() {
+        t                              selectedDeck === 'ma                        78;
+            elements.c         cription.textContent = `(1~사이                    `;
+            elements.                    untInput.max = maxCards;
             elements.customInputModal.classList.remove('hidden');
             elements.customCardCountInput.value = '';
             elements.customCardCountInput.focus();
@@ -523,11 +581,14 @@
 
         function startCustomGame() {
             const count = parseInt(elements.customCardCountInput.value);
-            if (count > 0 && count <= 78) {
+            const m                    ate.selecte                = 'majo                : 78;                               if (count                      <= maxCards) {
                 hideCustomInput();
                 startGame(count);
             } else {
-                showAlert('1에서 78 사이의 숫자를 입력해주세요.');
+                const mtedDeck === 'major' 
+                    ? '1에서 22 사이의 숫자를 입력해주세요.' 
+                    : '1에서 78 사이의 숫자를 입력해주세요.';
+                showAlert(message);
             }
         }
         
@@ -590,6 +651,7 @@
         function resetGame() {
             state.cardsToDraw = 0;
             state.selectedCards = [];
+            state.selectedDeck = null;
             showScreen('start');
         }
 
