@@ -783,7 +783,16 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             try {
+                console.log('=== TAROT APP INITIALIZATION ===');
+                console.log('Version: 2024-01-15-v2');
                 console.log('DOM Content Loaded - Initializing Tarot App');
+                
+                // 현재 페이지의 모든 섹션 확인
+                const allSections = document.querySelectorAll('section');
+                console.log('Found sections:', allSections.length);
+                allSections.forEach((section, index) => {
+                    console.log(`Section ${index}:`, section.id, section.className);
+                });
                 
                 // DOM 요소 확인
                 checkElements();
@@ -792,6 +801,7 @@
                 Object.values(screens).forEach(screen => {
                     if (screen) {
                         screen.classList.add('hidden');
+                        console.log('Hidden screen:', screen.id);
                     }
                 });
                 
@@ -799,10 +809,15 @@
                 const firstScreen = document.getElementById('deck-selection-screen');
                 if (firstScreen) {
                     firstScreen.classList.remove('hidden');
-                    console.log('Initial screen displayed successfully');
+                    console.log('✅ Initial screen displayed successfully:', firstScreen.id);
+                    console.log('Screen content:', firstScreen.textContent.substring(0, 100) + '...');
                 } else {
-                    console.error('First screen not found');
+                    console.error('❌ First screen not found');
                 }
+                
+                // 강제로 페이지 내용 확인
+                console.log('Page title:', document.title);
+                console.log('Body content preview:', document.body.textContent.substring(0, 200) + '...');
                 
             } catch (error) {
                 console.error('Error during initialization:', error);
@@ -810,7 +825,7 @@
                 document.body.innerHTML = '<div style="text-align: center; padding: 50px; color: white; background: #0f172a; min-height: 100vh;"><h1>타로 앱을 불러오는 중 오류가 발생했습니다.</h1><p>페이지를 새로고침해주세요.</p></div>';
             }
 
-            // PWA Service Worker 등록
+            // PWA Service Worker 등록 (강제 업데이트)
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
                     navigator.serviceWorker.register('./sw.js', {
@@ -818,6 +833,12 @@
                     })
                         .then((registration) => {
                             console.log('SW registered successfully: ', registration);
+                            // 강제 업데이트
+                            registration.update();
+                            // 모든 클라이언트에게 새 Service Worker 사용하도록 알림
+                            if (registration.waiting) {
+                                registration.waiting.postMessage({ action: 'skipWaiting' });
+                            }
                         })
                         .catch((registrationError) => {
                             console.log('SW registration failed: ', registrationError);

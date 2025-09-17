@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tarot-app-v4';
+const CACHE_NAME = 'tarot-app-v5-deck-selection-first';
 const urlsToCache = [
   '/tarot/',
   '/tarot/index.html',
@@ -102,11 +102,13 @@ self.addEventListener('activate', function(event) {
     caches.keys().then(function(cacheNames) {
       return Promise.all(
         cacheNames.map(function(cacheName) {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
+          // 모든 이전 캐시 삭제 (강제 업데이트)
+          return caches.delete(cacheName);
         })
       );
+    }).then(function() {
+      // 새 캐시 생성
+      return caches.open(CACHE_NAME);
     })
   );
   self.clients.claim();
