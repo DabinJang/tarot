@@ -1,0 +1,1 @@
+Simple tarot web app
