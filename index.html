@@ -441,10 +441,10 @@
         };
 
         const screens = {
-            deckSelection: document.getElementById('deck-selection-screen'),
-            countSelection: document.getElementById('count-selection-screen'),
-            selection: document.getElementById('selection-screen'),
-            result: document.getElementById('result-screen'),
+            'deck-selection': document.getElementById('deck-selection-screen'),
+            'count-selection': document.getElementById('count-selection-screen'),
+            'selection': document.getElementById('selection-screen'),
+            'result': document.getElementById('result-screen'),
         };
 
         const elements = {
@@ -464,12 +464,31 @@
             alertText: document.getElementById('alert-text'),
         };
 
+        // DOM 요소들이 제대로 로드되었는지 확인
+        function checkElements() {
+            const missingElements = [];
+            Object.entries(elements).forEach(([key, element]) => {
+                if (!element) {
+                    missingElements.push(key);
+                }
+            });
+            if (missingElements.length > 0) {
+                console.error('Missing DOM elements:', missingElements);
+            }
+        }
+
         function showScreen(screenId) {
-            Object.values(screens).forEach(screen => screen.classList.add('hidden', 'opacity-0'));
+            Object.values(screens).forEach(screen => {
+                if (screen) {
+                    screen.classList.add('hidden', 'opacity-0');
+                }
+            });
             const activeScreen = screens[screenId];
-            activeScreen.classList.remove('hidden');
-            setTimeout(() => activeScreen.classList.remove('opacity-0'), 50);
-            state.currentScreen = screenId;
+            if (activeScreen) {
+                activeScreen.classList.remove('hidden');
+                setTimeout(() => activeScreen.classList.remove('opacity-0'), 50);
+                state.currentScreen = screenId;
+            }
         }
 
         function showDeckSelection() {
@@ -486,12 +505,19 @@
         }
 
         function showAlert(message) {
-            elements.alertText.textContent = message;
-            elements.alertModal.classList.remove('hidden');
+            if (elements.alertText && elements.alertModal) {
+                elements.alertText.textContent = message;
+                elements.alertModal.classList.remove('hidden');
+            } else {
+                console.error('Alert elements not found');
+                alert(message); // Fallback to native alert
+            }
         }
 
         function hideAlert() {
-            elements.alertModal.classList.add('hidden');
+            if (elements.alertModal) {
+                elements.alertModal.classList.add('hidden');
+            }
         }
 
         function shuffleDeck(deck) {
@@ -505,13 +531,21 @@
 
         function updateSelectionCount() {
             const cardsLeft = state.cardsToDraw - state.selectedCards.length;
-            elements.cardsLeftCount.textContent = cardsLeft;
-            elements.viewResultsBtn.disabled = cardsLeft !== 0;
+            
+            if (elements.cardsLeftCount) {
+                elements.cardsLeftCount.textContent = cardsLeft;
+            }
+            
+            if (elements.viewResultsBtn) {
+                elements.viewResultsBtn.disabled = cardsLeft !== 0;
+            }
 
-            if (cardsLeft === 0) {
-                elements.selectionSubtitle.innerHTML = '모든 카드를 선택했습니다. 결과 보기를 눌러주세요.';
-            } else {
-                elements.selectionSubtitle.innerHTML = `남은 카드: <span id="cards-left-count">${cardsLeft}</span>`;
+            if (elements.selectionSubtitle) {
+                if (cardsLeft === 0) {
+                    elements.selectionSubtitle.innerHTML = '모든 카드를 선택했습니다. 결과 보기를 눌러주세요.';
+                } else {
+                    elements.selectionSubtitle.innerHTML = `남은 카드: <span id="cards-left-count">${cardsLeft}</span>`;
+                }
             }
         }
 
@@ -549,6 +583,11 @@
         }
 
         function populateSelectionGrid() {
+            if (!elements.cardGrid) {
+                console.error('Card grid element not found');
+                return;
+            }
+            
             elements.cardGrid.innerHTML = '';
             // Shuffle the deck before displaying
             const shuffledDeckForDisplay = shuffleDeck(state.fullDeck);
@@ -573,7 +612,9 @@
                 state.fullDeck = tarotDeckData.map((card, index) => ({ ...card, id: index }));
             }
 
-            elements.selectionTitle.textContent = `${count}장의 카드를 선택하세요`;
+            if (elements.selectionTitle) {
+                elements.selectionTitle.textContent = `${count}장의 카드를 선택하세요`;
+            }
 
             populateSelectionGrid();
             updateSelectionCount();
@@ -582,18 +623,34 @@
 
         function showCustomInput() {
             const maxCards = state.selectedDeck === 'major' ? 22 : 78;
-            elements.customInputDescription.textContent = `(1~${maxCards} 사이의 숫자를 입력하세요)`;
-            elements.customCardCountInput.max = maxCards;
-            elements.customInputModal.classList.remove('hidden');
-            elements.customCardCountInput.value = '';
-            elements.customCardCountInput.focus();
+            
+            if (elements.customInputDescription) {
+                elements.customInputDescription.textContent = `(1~${maxCards} 사이의 숫자를 입력하세요)`;
+            }
+            
+            if (elements.customCardCountInput) {
+                elements.customCardCountInput.max = maxCards;
+                elements.customCardCountInput.value = '';
+                elements.customCardCountInput.focus();
+            }
+            
+            if (elements.customInputModal) {
+                elements.customInputModal.classList.remove('hidden');
+            }
         }
 
         function hideCustomInput() {
-            elements.customInputModal.classList.add('hidden');
+            if (elements.customInputModal) {
+                elements.customInputModal.classList.add('hidden');
+            }
         }
 
         function startCustomGame() {
+            if (!elements.customCardCountInput) {
+                console.error('Custom card count input not found');
+                return;
+            }
+            
             const count = parseInt(elements.customCardCountInput.value);
             const maxCards = state.selectedDeck === 'major' ? 22 : 78;
             
@@ -615,15 +672,25 @@
             const isReversed = Math.random() < 0.5;
             const cardFront = cardEl.querySelector('.card-front');
 
-            if (isReversed) {
-                cardFront.classList.add('reversed');
-            } else {
-                cardFront.classList.remove('reversed');
+            if (cardFront) {
+                if (isReversed) {
+                    cardFront.classList.add('reversed');
+                } else {
+                    cardFront.classList.remove('reversed');
+                }
             }
 
-            elements.interpretationBox.classList.remove('hidden');
-            elements.interpTitle.textContent = `${cardData.name} (${isReversed ? '역방향' : '정방향'})`;
-            elements.interpText.textContent = isReversed ? cardData.meaning_rev : cardData.meaning_up;
+            if (elements.interpretationBox) {
+                elements.interpretationBox.classList.remove('hidden');
+            }
+            
+            if (elements.interpTitle) {
+                elements.interpTitle.textContent = `${cardData.name} (${isReversed ? '역방향' : '정방향'})`;
+            }
+            
+            if (elements.interpText) {
+                elements.interpText.textContent = isReversed ? cardData.meaning_rev : cardData.meaning_up;
+            }
 
             document.querySelectorAll('#result-cards .card').forEach(c => {
                 c.style.borderColor = '#6366f1';
@@ -632,8 +699,16 @@
         }
 
         function showResults() {
+            if (!elements.resultCards) {
+                console.error('Result cards element not found');
+                return;
+            }
+            
             elements.resultCards.innerHTML = '';
-            elements.interpretationBox.classList.add('hidden');
+            
+            if (elements.interpretationBox) {
+                elements.interpretationBox.classList.add('hidden');
+            }
 
             state.selectedCards.forEach(cardData => {
                 const cardEl = document.createElement('div');
@@ -651,12 +726,14 @@
                 `;
 
                 const img = cardEl.querySelector('.card-image');
-                img.onerror = function () {
-                    const errorDiv = document.createElement('div');
-                    errorDiv.className = 'text-xs text-red-500 p-2 flex items-center justify-center h-full text-center';
-                    errorDiv.textContent = `이미지를 불러올 수 없습니다.`;
-                    img.parentElement.replaceChild(errorDiv, img);
-                };
+                if (img) {
+                    img.onerror = function () {
+                        const errorDiv = document.createElement('div');
+                        errorDiv.className = 'text-xs text-red-500 p-2 flex items-center justify-center h-full text-center';
+                        errorDiv.textContent = `이미지를 불러올 수 없습니다.`;
+                        img.parentElement.replaceChild(errorDiv, img);
+                    };
+                }
 
                 cardEl.addEventListener('click', () => revealCard(cardEl, cardData));
                 elements.resultCards.appendChild(cardEl);
@@ -673,7 +750,16 @@
 
 
         document.addEventListener('DOMContentLoaded', () => {
-            showScreen('deck-selection');
+            try {
+                console.log('DOM Content Loaded - Initializing Tarot App');
+                checkElements();
+                showScreen('deck-selection');
+                console.log('Initial screen displayed successfully');
+            } catch (error) {
+                console.error('Error during initialization:', error);
+                // Fallback: show a simple message if everything fails
+                document.body.innerHTML = '<div style="text-align: center; padding: 50px; color: white; background: #0f172a; min-height: 100vh;"><h1>타로 앱을 불러오는 중 오류가 발생했습니다.</h1><p>페이지를 새로고침해주세요.</p></div>';
+            }
 
             // PWA Service Worker 등록
             if ('serviceWorker' in navigator) {
