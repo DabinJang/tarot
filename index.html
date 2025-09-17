@@ -206,11 +206,15 @@
             color: #94a3b8;
         }
         .copyright-notice {
-            position: absolute;
+            position: fixed;
             bottom: 1rem;
             left: 50%;
             transform: translateX(-50%);
-            z-index: 10;
+            z-index: 1000;
+            background-color: rgba(15, 23, 42, 0.8);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            backdrop-filter: blur(4px);
         }
     </style>
 </head>
@@ -229,8 +233,8 @@
                 </div>
                 
                 <!-- 저작권 표시 -->
-                <div class="copyright-notice">
-                    <p class="text-xs text-slate-500">
+                <div class="mt-8 text-center">
+                    <p class="text-xs text-slate-400">
                         <a href="https://www.flaticon.com/kr/free-icons/" title="타로 아이콘" class="copyright-link">타로 아이콘 제작자: Smashicons - Flaticon</a>
                     </p>
                 </div>
@@ -249,8 +253,8 @@
                 </div>
                 
                 <!-- 저작권 표시 -->
-                <div class="copyright-notice">
-                    <p class="text-xs text-slate-500">
+                <div class="mt-4 text-center">
+                    <p class="text-xs text-slate-400">
                         <a href="https://www.flaticon.com/kr/free-icons/" title="타로 아이콘" class="copyright-link">타로 아이콘 제작자: Smashicons - Flaticon</a>
                     </p>
                 </div>
