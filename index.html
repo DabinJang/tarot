@@ -235,6 +235,14 @@
             border-radius: 0.5rem;
             backdrop-filter: blur(4px);
         }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .opacity-0 {
+            opacity: 0 !important;
+        }
     </style>
 </head>
 
@@ -478,29 +486,44 @@
         }
 
         function showScreen(screenId) {
+            console.log('Showing screen:', screenId);
+            
+            // 모든 화면 숨기기
             Object.values(screens).forEach(screen => {
                 if (screen) {
-                    screen.classList.add('hidden', 'opacity-0');
+                    screen.classList.add('hidden');
+                    screen.classList.remove('opacity-0');
                 }
             });
+            
+            // 선택된 화면 보이기
             const activeScreen = screens[screenId];
             if (activeScreen) {
                 activeScreen.classList.remove('hidden');
-                setTimeout(() => activeScreen.classList.remove('opacity-0'), 50);
+                activeScreen.classList.add('opacity-0');
+                setTimeout(() => {
+                    activeScreen.classList.remove('opacity-0');
+                }, 50);
                 state.currentScreen = screenId;
+                console.log('Screen displayed:', screenId);
+            } else {
+                console.error('Screen not found:', screenId);
             }
         }
 
         function showDeckSelection() {
+            console.log('showDeckSelection called');
             showScreen('deck-selection');
         }
 
         function selectDeck(deckType) {
+            console.log('selectDeck called with:', deckType);
             state.selectedDeck = deckType;
             showScreen('count-selection');
         }
 
         function showCountSelection() {
+            console.log('showCountSelection called');
             showScreen('count-selection');
         }
 
@@ -602,6 +625,7 @@
         }
 
         function startGame(count) {
+            console.log('startGame called with count:', count, 'selectedDeck:', state.selectedDeck);
             state.cardsToDraw = count;
             state.selectedCards = [];
 
@@ -742,6 +766,7 @@
         }
 
         function resetGame() {
+            console.log('resetGame called');
             state.cardsToDraw = 0;
             state.selectedCards = [];
             state.selectedDeck = null;
@@ -752,9 +777,26 @@
         document.addEventListener('DOMContentLoaded', () => {
             try {
                 console.log('DOM Content Loaded - Initializing Tarot App');
+                
+                // DOM 요소 확인
                 checkElements();
-                showScreen('deck-selection');
-                console.log('Initial screen displayed successfully');
+                
+                // 모든 화면을 숨기고 첫 번째 화면만 보이기
+                Object.values(screens).forEach(screen => {
+                    if (screen) {
+                        screen.classList.add('hidden');
+                    }
+                });
+                
+                // 첫 번째 화면 보이기
+                const firstScreen = document.getElementById('deck-selection-screen');
+                if (firstScreen) {
+                    firstScreen.classList.remove('hidden');
+                    console.log('Initial screen displayed successfully');
+                } else {
+                    console.error('First screen not found');
+                }
+                
             } catch (error) {
                 console.error('Error during initialization:', error);
                 // Fallback: show a simple message if everything fails
