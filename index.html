@@ -485,12 +485,10 @@
 
         function showScreen(screenId) {
             Object.values(screens).forEach(screen => screen.classList.add('hidden', 'opacity-0'));
-            const activeScreen = document.getElementById(`${screenId}-screen`) || document.getElementById(screenId);
-            if (activeScreen) {
-                activeScreen.classList.remove('hidden');
-                setTimeout(() => activeScreen.classList.remove('opacity-0'), 50);
-                state.currentScreen = screenId;
-            }
+            const activeScreen = screens[screenId];
+            activeScreen.classList.remove('hidden');
+            setTimeout(() => activeScreen.classList.remove('opacity-0'), 50);
+            state.currentScreen = screenId;
         }
 
         function showDeckSelection() {
@@ -617,12 +615,14 @@
         function startCustomGame() {
             const count = parseInt(elements.customCardCountInput.value);
             const maxCards = state.selectedDeck === 'major' ? 22 : 78;
-
-            if (count && count >= 1 && count <= maxCards) {
+            
+            if (count > 0 && count <= maxCards) {
                 hideCustomInput();
                 startGame(count);
             } else {
-                const message = `1에서 ${maxCards} 사이의 숫자를 입력해주세요.`;
+                const message = state.selectedDeck === 'major' 
+                    ? '1에서 22 사이의 숫자를 입력해주세요.' 
+                    : '1에서 78 사이의 숫자를 입력해주세요.';
                 showAlert(message);
             }
         }
@@ -704,7 +704,8 @@
             const installBtn = document.createElement('button');
             installBtn.id = 'install-btn';
             installBtn.textContent = '앱 설치하기';
-            installBtn.className = 'action-btn w-64'; // 다른 버튼과 스타일 통일
+            installBtn.className = 'action-btn mt-4';
+            installBtn.style.display = 'block';
             installBtn.onclick = () => {
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
