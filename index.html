@@ -17,6 +17,17 @@
     <meta name="apple-mobile-web-app-orientations" content="portrait">
     <meta name="format-detection" content="telephone=no">
     <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- Windows/Android PWA Support -->
+    <meta name="msapplication-TileColor" content="#4f46e5">
+    <meta name="msapplication-config" content="browserconfig.xml">
+    <meta name="application-name" content="신비한 타로">
+    <meta name="msapplication-tooltip" content="타로 카드 앱">
+    <meta name="msapplication-starturl" content="/tarot/">
+    
+    <!-- Android Chrome PWA -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -185,6 +196,14 @@
             border-radius: 1rem;
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
+        .copyright-link {
+            color: #64748b;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .copyright-link:hover {
+            color: #94a3b8;
+        }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-200">
@@ -199,6 +218,13 @@
                     <button onclick="startGame(1)" class="action-btn w-64">한 장 뽑기</button>
                     <button onclick="startGame(3)" class="action-btn w-64">세 장 뽑기</button>
                     <button onclick="showCustomInput()" class="action-btn w-64">원하는 개수 뽑기</button>
+                </div>
+                
+                <!-- 저작권 표시 -->
+                <div class="mt-12 text-center">
+                    <p class="text-xs text-slate-500">
+                        <a href="https://www.flaticon.com/kr/free-icons/" title="타로 아이콘" class="copyright-link">타로 아이콘 제작자: Smashicons - Flaticon</a>
+                    </p>
                 </div>
             </div>
         </section>
@@ -226,6 +252,13 @@
                      <p id="interp-text" class="text-slate-300"></p>
                  </div>
                  <button onclick="resetGame()" class="action-btn mt-8 secondary-btn">처음으로 돌아가기</button>
+                 
+                 <!-- 저작권 표시 -->
+                 <div class="mt-8 text-center">
+                     <p class="text-xs text-slate-500">
+                         <a href="https://www.flaticon.com/kr/free-icons/" title="타로 아이콘" class="copyright-link">타로 아이콘 제작자: Smashicons - Flaticon</a>
+                     </p>
+                 </div>
              </div>
         </section>
 
@@ -540,6 +573,35 @@
             state.selectedCards = [];
             showScreen('start');
         }
+
+        // PWA 설치 프롬프트
+        let deferredPrompt;
+        let installButton;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // 설치 버튼 표시
+            const installBtn = document.createElement('button');
+            installBtn.textContent = '앱 설치하기';
+            installBtn.className = 'action-btn mt-4';
+            installBtn.style.display = 'block';
+            installBtn.onclick = () => {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('PWA 설치됨');
+                    }
+                    deferredPrompt = null;
+                    installBtn.remove();
+                });
+            };
+            
+            const startScreen = document.getElementById('start-screen');
+            const buttonContainer = startScreen.querySelector('.space-y-4');
+            buttonContainer.appendChild(installBtn);
+        });
 
         document.addEventListener('DOMContentLoaded', () => {
             showScreen('start');
